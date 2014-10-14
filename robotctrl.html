@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8" />
+
+<title>Telepresence Robot Control</title>
+
+<link rel="stylesheet" href="robotctrl.css" />
+<script language="javascript" type="text/javascript">
+
+  document.onkeydown = check_key;
+
+  function check_key(e) 
+  {
+    e = e || window.event;
+
+    if      (e.keyCode == '37') { L.onclick(); }
+    else if (e.keyCode == '38') { F.onclick(); }
+    else if (e.keyCode == '39') { R.onclick(); }
+    else if (e.keyCode == '40') { B.onclick(); }
+    else if (e.keyCode == '83') { S.onclick(); }
+  }
+
+  function init()
+  {
+    document.myform.url.value = "ws://localhost:8000/"
+    document.myform.inputtext.value = "Hello World!"
+    document.myform.disconnectButton.disabled = true;
+  }
+
+  function doConnect()
+  {
+    websocket = new WebSocket(document.myform.url.value);
+    websocket.onopen = function(evt) { onOpen(evt) };
+    websocket.onclose = function(evt) { onClose(evt) };
+    websocket.onmessage = function(evt) { onMessage(evt) };
+    websocket.onerror = function(evt) { onError(evt) };
+  }
+
+  function onOpen(evt)
+  {
+    writeToScreen("connected\n");
+    document.myform.connectButton.disabled = true;
+    document.myform.disconnectButton.disabled = false;
+  }
+
+  function onClose(evt)
+  {
+    writeToScreen("disconnected\n");
+    document.myform.connectButton.disabled = false;
+    document.myform.disconnectButton.disabled = true;
+  }
+
+  function onMessage(evt)
+  {
+    writeToScreen("response: " + evt.data + '\n');
+  }
+
+  function onError(evt)
+  {
+    writeToScreen('error: ' + evt.data + '\n');
+
+    websocket.close();
+
+    document.myform.connectButton.disabled = false;
+    document.myform.disconnectButton.disabled = true;
+  }
+
+  function doSend(message)
+  {
+    writeToScreen("sent: " + message + '\n'); 
+    websocket.send(message);
+  }
+
+  function writeToScreen(message)
+  {
+    document.myform.outputtext.value += message
+    document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
+  }
+
+  window.addEventListener("load", init, false);
+
+
+  function sendText() 
+  {
+    doSend( document.myform.inputtext.value );
+  }
+
+  function clearText() 
+  {
+    document.myform.outputtext.value = "";
+  }
+
+  function doDisconnect() 
+  {
+    websocket.close();
+  }
+
+</script>
+
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <!-- text boxes and buttons -->
+    <td>
+      <form name="myform">
+        <p><textarea name="outputtext" rows="20" cols="50"></textarea></p> 
+	<p><textarea name="inputtext" cols="50"></textarea></p>            
+	<p><textarea name="url" cols="50"></textarea></p>              
+	<p>
+	  <input type="button" name=sendButton value="Send" onClick="sendText();">
+	  <input type="button" name=clearButton value="Clear" onClick="clearText();">
+	  <input type="button" name=disconnectButton value="Disconnect" onClick="doDisconnect();">
+	  <input type="button" name=connectButton value="Connect" onClick="doConnect();">
+	</p>
+      </form>
+    </td>
+
+    <!-- spacer cell/column -->
+    <td width="100px"></td>
+
+    <!-- movement buttons -->
+    <td valign="top">
+      <table class="button" padding=5>
+	<tr align="center">
+          <td></td>
+          <td id="F" class="button" onclick=doSend("F")>F</td>
+          <td></td>
+	</tr>
+        <tr align="center">
+	  <td id="L" class="button" onclick=doSend("L")>L</td>
+          <td id="B" class="button" onclick=doSend("B")>B</td>
+          <td id="R" class="button" onclick=doSend("R")>R</td>
+	</tr>
+        <tr><td height="50px"></td></tr>
+        <tr>
+	  <td></td>
+	  <td align="center" id="S" class="stopbutton" onclick=doSend("S")>STOP</td>
+	  <td></td>
+      </table>
+    </td>
+  </tr>
+</html> 

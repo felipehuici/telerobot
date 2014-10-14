@@ -1,0 +1,40 @@
+table#buttontable {
+        padding-top: 10px;
+}
+
+td.button {
+        width: 60px;
+        height: 60px;
+        font-family: Arial;
+        font-size: 18pt;
+        font-weight: bold;
+        color: black;
+        background-color: grey;
+}
+
+
+td.stopbutton {
+        width: 60px;
+        height: 60px;
+        font-family: Arial;
+        font-size: 10pt;
+        font-weight: bold;
+        color: black;
+        background-color: grey;
+}
+
+td.button:active {
+        background-color: red;
+}
+
+
+html {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+}
+
