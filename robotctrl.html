@@ -7,17 +7,37 @@
 <link rel="stylesheet" href="robotctrl.css" />
 <script language="javascript" type="text/javascript">
 
-  document.onkeydown = check_key;
+  document.onkeydown = onkeydown_handler;
+  document.onkeyup = onkeyup_handler;
+  is_key_down = false;
 
-  function check_key(e) 
+  function onkeydown_handler(e) 
   {
     e = e || window.event;
 
-    if      (e.keyCode == '37') { L.onclick(); }
-    else if (e.keyCode == '38') { F.onclick(); }
-    else if (e.keyCode == '39') { R.onclick(); }
-    else if (e.keyCode == '40') { B.onclick(); }
-    else if (e.keyCode == '83') { S.onclick(); }
+    if (is_key_down == true) { return; }
+
+    if      (e.keyCode == '37') { L.onmousedown(); }
+    else if (e.keyCode == '38') { F.onmousedown(); }
+    else if (e.keyCode == '39') { R.onmousedown(); }
+    else if (e.keyCode == '40') { B.onmousedown(); }
+    else if (e.keyCode == '83') { S.onmousedown(); }
+    is_key_down = true;
+  }
+
+  function onkeyup_handler(e) 
+  {
+    e = e || window.event;
+    if ( (e.keyCode == '37') || 
+         (e.keyCode == '38') ||
+         (e.keyCode == '39') ||
+         (e.keyCode == '40') ||
+         (e.keyCode == '83') )
+    {
+      S.onclick();
+      is_key_down = false;
+    }
+
   }
 
   function init()
@@ -122,13 +142,13 @@
       <table class="button" padding=5>
 	<tr align="center">
           <td></td>
-          <td id="F" class="button" onclick=doSend("F")>F</td>
+	  <td id="F" class="button" onmouseup=doSend("S") onmousedown=doSend("F")>F</td>
           <td></td>
 	</tr>
         <tr align="center">
-	  <td id="L" class="button" onclick=doSend("L")>L</td>
-          <td id="B" class="button" onclick=doSend("B")>B</td>
-          <td id="R" class="button" onclick=doSend("R")>R</td>
+	  <td id="L" class="button" onmouseup=doSend("S") onmousedown=doSend("L")>L</td>
+          <td id="B" class="button" onmouseup=doSend("S") onmousedown=doSend("B")>B</td>
+          <td id="R" class="button" onmouseup=doSend("S") onmousedown=doSend("R")>R</td>
 	</tr>
         <tr><td height="50px"></td></tr>
         <tr>
